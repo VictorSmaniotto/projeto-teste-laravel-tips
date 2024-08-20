@@ -2,6 +2,9 @@
 
 use App\Models\Plan;
 use App\Enums\SignatureStatus;
+use App\Http\Controllers\EmployeeAddressController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\PlanController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
@@ -62,3 +65,20 @@ Route::get('/test', function(){
 });
 
 Route::get('teste', [SignatureController::class, 'index']);
+
+// Podemos usar resource de modo que o Laravel crie as 7 rotas vindas do Controller
+Route::resource('plan', PlanController::class);
+
+// Saída employee/create
+Route::resource('employee', EmployeeController::class)
+    ->except(methods:['edit', 'store']);
+
+// Podemos criar as rotas já com a obrigatoriedade de um apontamento, por exemplo:  employee/{employee}/address/create
+Route::resource('employee.address', EmployeeAddressController::class)
+    ->parameters([
+        'employee' => 'funcionario',
+        'address' => 'endereco'
+    ])
+    ->only(methods:['index', 'destroy']); 
+
+// Route::resource('funcionario.endereco', EmployeeController::class);   alterei o RouteServiceProvider.php para customizar o resource
